@@ -16,11 +16,9 @@
   <title>QAG10</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
     * {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       background: radial-gradient(circle, #000000 0%, #110000 100%);
@@ -29,12 +27,10 @@
       overflow-x: hidden;
       animation: pulseBackground 10s infinite alternate;
     }
-
     @keyframes pulseBackground {
       0% { background-color: #110000; }
       100% { background-color: #1a0000; }
     }
-
     header {
       text-align: center;
       font-size: 4rem;
@@ -45,7 +41,6 @@
       border-bottom: 2px solid red;
       margin-bottom: 20px;
     }
-
     .main, .code, .mascot {
       margin: 20px auto;
       max-width: 90%;
@@ -55,16 +50,13 @@
       text-align: center;
       box-shadow: 0 0 30px #ff000099;
     }
-
     .main {
       font-size: 1.5rem;
       text-shadow: 0 0 4px #ff4d4d;
     }
-
     .code p, .mascot p {
       margin: 10px 0;
     }
-
     .play-button {
       background: linear-gradient(135deg, #aaff00, #69f01d);
       color: black;
@@ -80,12 +72,10 @@
       box-shadow: 0 0 14px #95ff14, 0 0 4px #000 inset;
       transition: transform 0.2s, box-shadow 0.3s;
     }
-
     .play-button:hover {
       transform: scale(1.07);
       box-shadow: 0 0 25px #aaff00;
     }
-
     .time {
       font-size: 1.2rem;
       background-color: #3d0000;
@@ -98,14 +88,12 @@
       width: fit-content;
       display: block;
     }
-
     img {
       border-radius: 12px;
       box-shadow: 0 0 10px red;
       max-width: 90%;
       height: auto;
     }
-
     iframe {
       display: block;
       margin: 30px auto;
@@ -113,18 +101,15 @@
       border-radius: 10px;
       box-shadow: 0 0 12px red;
     }
-
     hr {
       border: none;
       height: 2px;
       background: linear-gradient(to right, transparent, red, transparent);
       margin: 40px 0;
     }
-
     a {
       text-decoration: none;
     }
-
     .radio-wrapper {
       width: 52%;
       max-width: 260px;
@@ -132,13 +117,11 @@
       text-align: center;
       position: relative;
     }
-
     .radio-wrapper img {
       width: 100%;
       border-radius: 15px;
       box-shadow: 0 0 25px #ff4d4d;
     }
-
     .radio-wrapper audio {
       position: absolute;
       bottom: 12%;
@@ -151,20 +134,34 @@
       outline: none;
       accent-color: #95ff14;
     }
-
     .gif-wrapper {
       text-align: center;
       margin: 30px auto;
     }
-
     .glow-gif {
       display: inline-block;
       max-width: 90%;
       border-radius: 12px;
       box-shadow: 0 0 20px red;
     }
+    #umbrellaMan {
+      position: fixed;
+      top: -100px;
+      left: -100px;
+      width: 64px;
+      height: 64px;
+      z-index: 9999;
+      pointer-events: none;
+      image-rendering: pixelated;
+    }
+    #deathOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: black;
+      z-index: 99999;
+    }
   </style>
-
 </head>
 <body onload="startTime()">
 
@@ -222,6 +219,9 @@
 <p>AND THE BEST GAQ9™️er:BOOTLEG (by the way you get my firstborn)
 	</div>
 
+  <img src="https://i.imgur.com/OX32Mha.png" id="umbrellaMan" alt="Umbrella Man" />
+  <div id="deathOverlay"></div>
+
   <script>
     function startTime() {
       const today = new Date();
@@ -241,6 +241,46 @@
     function checkTime(i) {
       return (i < 10) ? "0" + i : i;
     }
+
+    // Umbrella Man Script
+    const umbrella = document.getElementById('umbrellaMan');
+    const deathOverlay = document.getElementById('deathOverlay');
+    let mouseX = 0, mouseY = 0;
+    let umbrellaX = -200, umbrellaY = -200;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function updateUmbrella() {
+      umbrellaX = lerp(umbrellaX, mouseX, 0.01);
+      umbrellaY = lerp(umbrellaY, mouseY, 0.01);
+
+      umbrella.style.left = umbrellaX + 'px';
+      umbrella.style.top = umbrellaY + 'px';
+
+      const dx = umbrellaX - mouseX;
+      const dy = umbrellaY - mouseY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 32) {
+        deathOverlay.style.display = 'block';
+        document.body.innerHTML = '';
+        document.body.appendChild(deathOverlay);
+      } else {
+        requestAnimationFrame(updateUmbrella);
+      }
+    }
+
+    setTimeout(() => {
+      requestAnimationFrame(updateUmbrella);
+    }, 5000); // 5s delay before chase
   </script>
+
 </body>
 </html>
