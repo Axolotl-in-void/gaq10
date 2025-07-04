@@ -1,5 +1,5 @@
 <html>
-<body>
+<body onload="startTime()">
 <head>
 <title>QAG10</title>
 <style>
@@ -29,6 +29,49 @@ color:red;
             max-width: 90%;
 			text-align:center;
 }
+.main {
+            font-family: ocr a, monospace;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 2rem auto 0 auto;
+            max-width: 90%;
+			text-align:center;
+}
+       .play-button {
+            background-color: #6c4fff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-family: ocr a, monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+			text-align: center;
+
+    margin: 0 auto;
+    display: block;
+        }
+        
+        .play-button:hover {
+            background-color: #6c4fff;
+            box-shadow: 0 0 15px #6c4fff;
+            transform: scale(1.05);
+    margin: 0 auto;
+    display: block;
+        }
+.time {
+             font-family: ocr a, monospace;
+            padding: 20px 0px 20px 20px
+            border-radius: 5px;
+            margin: 2rem auto 0 auto;
+            max-width: 90%;
+			text-align:center;
+			background-color: #3d0000;
+ }
 </style>
 </head>
 <div class="head">
@@ -38,21 +81,52 @@ QAG10
 </header>
 </b>
 </div>
+<div class="main">Somehow the best theory place for this</div>
   <div style="width: 100%; text-align: center; margin-bottom: 20px;">
   <div class="code">
             <p>Status: not Interloped yet</p>
             <p>ID: QAG10</p>
             <p>QAG: 10</p>
             <p>tottaly not gaq9 just gaq10 (less interloped)         ps:its pronounced quag 10</p>
-            <p>we gonna upload funny vids and other source engine stuff WEEEE</p>
+            <p>we gonna upload funny vids, INTERLOPER theories and Help for newbies</p>
 			            <p>Why tf does interloper have fanfics!?!?</p>
 </div>
         </div>
 <div class="mascot">
-our mascot:CONE <p>
-TADZY STOP</p>
+cone <p>
 <p>
 <img src="cone.jpg" alt="if youre seeing this #CONE#" style="font-size:20px;" width="200" height="200"></p>
+<div class="mascot">
+TADZY STOP</p>
+Made by cge7-193
+</div>
+<hr style="color:red">
+<p>
+<img src="fatty.jpg" alt="if youre seeing this fatty" style="font-size:20px;" width="200" height="200"></p>
+</div>
+            <button class="play-button" id="viewMaps" style="background-color: #95ff14;text-align:center;">Theory board</button>
+<p>
+<div id="time"class="time"></div>
+<script>
+function startTime() {
+  const today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+  let s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('time').innerHTML =  h + ":" + m + ":" + s;
+  setTimeout(startTime, 1000);
+}
+
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+</script>
+<div class="code">
+<p style="padding-top-top:0px. text-align: center;">
+cge7-193 restarts every hour so thought i would ad this here so people know when it restarts :)
 </div>
 </body>
 </html>
