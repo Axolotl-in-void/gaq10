@@ -1,145 +1,242 @@
-<html>
-<meta content="qag10 - the one stop interloper theory board" property="og:title" />
-<meta content="gaq9 but for interloper theories" property="og:description" />
-<meta content="https://axolotl-in-void.github.io/gaq10/index.html" property="og:url" />
-<meta content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" property="og:image" />
-<meta content="#43B581" data-react-helmet="true" name="theme-color" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="qag10 - the one stop interloper theory board" />
-    <meta name="twitter:description" content="gaq9 but for interloper theories" />
-    <meta name="twitter:image" content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" />
-<body onload="startTime()">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="icon" href="sbox.jpg" type="image/x-icon">
-<title>QAG10</title>
-<style>
- .head {
-  color:red;
-  text-align: center;
-  font-family: ocr a;
-  font-size: 40pt;
-  padding-top: 20px;
-}
-body { background-color:black;
-color:red;
-}
-   .code {
-            font-family: ocr a, monospace;
-            background-color: #3d0000;
-            padding: 1rem;
-            border-radius: 5px;
-            margin: 2rem auto 0 auto;
-            max-width: 90%;
-        }
-.mascot {
-            font-family: ocr a, monospace;
-            padding: 1rem;
-            border-radius: 5px;
-            margin: 2rem auto 0 auto;
-            max-width: 90%;
-			text-align:center;
-}
-.main {
-            font-family: ocr a, monospace;
-            padding: 1rem;
-            border-radius: 5px;
-            margin: 2rem auto 0 auto;
-            max-width: 90%;
-			text-align:center;
-}
-       .play-button {
-            background-color: #6c4fff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-family: ocr a, monospace;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-            animation: pulse 2s infinite;
-			text-align: center;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta content="qag10 - the one stop interloper theory board" property="og:title" />
+  <meta content="gaq9 but for interloper theories" property="og:description" />
+  <meta content="https://axolotl-in-void.github.io/gaq10/index.html" property="og:url" />
+  <meta content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" property="og:image" />
+  <meta content="#43B581" name="theme-color" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="qag10 - the one stop interloper theory board" />
+  <meta name="twitter:description" content="gaq9 but for interloper theories" />
+  <meta name="twitter:image" content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" />
+  <link rel="icon" href="sbox.jpg" type="image/x-icon" />
+  <title>QAG10</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-    margin: 0 auto;
-    display: block;
-        }
-        
-        .play-button:hover {
-            background-color: #6c4fff;
-            box-shadow: 0 0 15px #6c4fff;
-            transform: scale(1.05);
-    margin: 0 auto;
-    display: block;
-        }
-.time {
-             font-family: ocr a, monospace;
-            padding: 20px 0px 20px 20px
-            border-radius: 5px;
-            margin: 2rem auto 0 auto;
-            max-width: 90%;
-			text-align:center;
-			background-color: #3d0000;
- }
-</style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle, #000000 0%, #110000 100%);
+      color: #ff4d4d;
+      font-family: 'Share Tech Mono', monospace;
+      overflow-x: hidden;
+      animation: pulseBackground 10s infinite alternate;
+    }
+
+    @keyframes pulseBackground {
+      0% { background-color: #110000; }
+      100% { background-color: #1a0000; }
+    }
+
+    header {
+      text-align: center;
+      font-size: 4rem;
+      padding: 30px 10px 10px;
+      color: #ff2a2a;
+      text-shadow: 0 0 12px red, 0 0 25px #ff0000;
+      letter-spacing: 2px;
+      border-bottom: 2px solid red;
+      margin-bottom: 20px;
+    }
+
+    .main, .code, .mascot {
+      margin: 20px auto;
+      max-width: 90%;
+      padding: 25px;
+      background-color: rgba(42, 0, 0, 0.85);
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 30px #ff000099;
+    }
+
+    .main {
+      font-size: 1.5rem;
+      text-shadow: 0 0 4px #ff4d4d;
+    }
+
+    .code p, .mascot p {
+      margin: 10px 0;
+    }
+
+    .play-button {
+      background: linear-gradient(135deg, #aaff00, #69f01d);
+      color: black;
+      border: none;
+      padding: 14px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      font-family: 'Share Tech Mono', monospace;
+      border-radius: 10px;
+      margin: 25px auto;
+      cursor: pointer;
+      display: block;
+      box-shadow: 0 0 14px #95ff14, 0 0 4px #000 inset;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    .play-button:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 25px #aaff00;
+    }
+
+    .time {
+      font-size: 1.2rem;
+      background-color: #3d0000;
+      border: 1px solid #ff0000;
+      padding: 10px 20px;
+      margin: 20px auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px red;
+      text-align: center;
+      width: fit-content;
+      display: block;
+    }
+
+    img {
+      border-radius: 12px;
+      box-shadow: 0 0 10px red;
+      max-width: 90%;
+      height: auto;
+    }
+
+    iframe {
+      display: block;
+      margin: 30px auto;
+      border: 2px solid red;
+      border-radius: 10px;
+      box-shadow: 0 0 12px red;
+    }
+
+    hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(to right, transparent, red, transparent);
+      margin: 40px 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .radio-wrapper {
+      width: 52%;
+      max-width: 260px;
+      margin: 40px auto;
+      text-align: center;
+      position: relative;
+    }
+
+    .radio-wrapper img {
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 0 25px #ff4d4d;
+    }
+
+    .radio-wrapper audio {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 45%;
+      height: 28px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
+      outline: none;
+      accent-color: #95ff14;
+    }
+
+    .gif-wrapper {
+      text-align: center;
+      margin: 30px auto;
+    }
+
+    .glow-gif {
+      display: inline-block;
+      max-width: 90%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px red;
+    }
+  </style>
+
 </head>
-<div class="head">
-<b>
-<header>
-QAG10
-</header>
-</b>
-</div>
-<div class="main">Somehow the best theory place for this</div>
-  <div style="width: 100%; text-align: center; margin-bottom: 20px;">
-  <div class="code">
-            <p>Status: not Interloped yet</p>
-            <p>ID: QAG10</p>
-            <p>QAG: 10</p>
-            <p>made this because NOTHING EVER HAPPENS ON gaq9         ps:its pronounced quag 10</p>
-            <p>we gonna upload funny vids, INTERLOPER theories and Help for newbies</p>
-			            <p>Why tf does interloper have fanfics!?!?</p>
-</div>
-        </div>
-<div class="mascot">
-cone <p>
-<p>
-<img src="cone.jpg" alt="if youre seeing this #CONE#" style="font-size:20px;" width="200" height="200"></p>
-<div class="mascot">
-TADZY STOP</p>
-Made by cge7-193
-</div>
-<hr style="color:red">
-<p>
-<img src="fatty.jpg" alt="if youre seeing this fatty" style="font-size:20px;" width="200" height="200"></p>
-</div>
-           <a href="theory.html"> <button class="play-button" id="viewMaps" style="background-color: #95ff14;text-align:center;">Theory board</button></a><p><a href="recaps.html"> <button class="play-button" id="viewMaps" style="background-color: #95ff14;text-align:center;">recaps</button></a>
-<p>
-<div id="time"class="time"></div>
-<script>
-function startTime() {
-  const today = new Date();
-  let h = today.getHours();
-  let m = today.getMinutes();
-  let s = today.getSeconds();
-  m = checkTime(m);
-  s = checkTime(s);
-  document.getElementById('time').innerHTML =  h + ":" + m + ":" + s;
-  setTimeout(startTime, 1000);
-}
+<body onload="startTime()">
 
-function checkTime(i) {
-  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-  return i;
-}
-</script>
-<div class="code">
-<p style="padding-top-top:0px. text-align: center;">
-cge7-193 restarts every hour so thought i would ad this here so people know when it restarts :)
-<p>
-<p>
-Special thanks to: https://www.youtube.com/@chasedacurious
-</div>
+  <header>QAG10</header>
+
+  <div class="main">
+    Somehow the best theory place for this.
+  </div>
+
+  <div class="radio-wrapper">
+    <img src="https://images.steamusercontent.com/ugc/1887589821937749700/8134D8ED672C98C9F7C2AD919BFF932B5A5301D4/" alt="Radio scary">
+    <audio id="fancy-audio" controls>
+      <source src="https://axolotl-in-void.github.io/gaq10/output-worst.mp4" type="audio/mp4">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  <div class="code">
+    <p>Status: not Interloped yet</p>
+    <p>ID: QAG10</p>
+    <p>QAG: 10</p>
+    <p>made this because NOTHING EVER HAPPENS ON gaq9 (ps: it’s pronounced “quag 10”)</p>
+    <p>We gonna upload funny vids, INTERLOPER theories and Help for newbies</p>
+    <p>Why tf does interloper have fanfics!?!?</p>
+  </div>
+
+  <div class="mascot">
+    <p>cone</p>
+    <img src="cone.jpg" alt="if youre seeing this #CONE#" width="200">
+    <p>TADZY STOP</p>
+    <p>Made by cge7-193</p>
+  </div>
+
+  <hr>
+
+  <div class="mascot">
+    <img src="fatty.jpg" alt="if you're seeing this fatty" width="200">
+  </div>
+
+  <div class="gif-wrapper">
+    <img src="https://gaq9.com/img/funny/on%20our%20way%20to%20noaccess%20again.gif" alt="omw to noaccess what you want from there?" class="glow-gif">  
+  </div>
+
+  <a href="theory.html"><button class="play-button">Theory board</button></a>
+  <a href="recaps.html"><button class="play-button">Recaps</button></a>
+
+  <div id="time" class="time"></div>
+
+  <div class="code">
+    <p>cge7-193 restarts every hour so thought I would add this here so people know when it restarts :)</p>
+    <p>Special thanks to: <a href="https://www.youtube.com/@chasedacurious" style="color: #95ff14;">@chasedacurious</a></p>
+  </div>
+
+  <script>
+    function startTime() {
+      const today = new Date();
+      let h = today.getHours();
+      let m = today.getMinutes();
+      let s = today.getSeconds();
+      let ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12; // hour 0 should be 12
+      m = checkTime(m);
+      s = checkTime(s);
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      document.getElementById('time').innerHTML = `${h}:${m}:${s} ${ampm} (${tz})`;
+      setTimeout(startTime, 1000);
+    }
+
+    function checkTime(i) {
+      return (i < 10) ? "0" + i : i;
+    }
+  </script>
 </body>
 </html>
