@@ -281,7 +281,7 @@
     requestAnimationFrame(updateUmbrella);
   }, 5000);
 
-  // Notification Script
+  // Notification Checker (periodic)
   async function checkNotif() {
     const notifUrl = "https://raw.githubusercontent.com/axolotl-in-void/gaq10/main/notif.txt";
 
@@ -331,8 +331,9 @@
   }
 
   window.addEventListener("load", () => {
-    setTimeout(startTime, 500);
-    setTimeout(checkNotif, 2000);
+    startTime();
+    checkNotif();
+    setInterval(checkNotif, 30000); // Check notif.txt every 30 seconds
   });
 </script>
 
