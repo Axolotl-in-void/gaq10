@@ -222,66 +222,120 @@
 
   <img src="https://i.imgur.com/OX32Mha.png" id="umbrellaMan" alt="Umbrella Man" />
   <div id="deathOverlay"></div>
+<script>
+  function startTime() {
+    const today = new Date();
+    let h = today.getHours();
+    let m = today.getMinutes();
+    let s = today.getSeconds();
+    let ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12;
+    m = checkTime(m);
+    s = checkTime(s);
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById('time').innerHTML = `${h}:${m}:${s} ${ampm} (${tz})`;
+    setTimeout(startTime, 1000);
+  }
 
-  <script>
-    function startTime() {
-      const today = new Date();
-      let h = today.getHours();
-      let m = today.getMinutes();
-      let s = today.getSeconds();
-      let ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12;
-      h = h ? h : 12; // hour 0 should be 12
-      m = checkTime(m);
-      s = checkTime(s);
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      document.getElementById('time').innerHTML = `${h}:${m}:${s} ${ampm} (${tz})`;
-      setTimeout(startTime, 1000);
-    }
+  function checkTime(i) {
+    return (i < 10) ? "0" + i : i;
+  }
 
-    function checkTime(i) {
-      return (i < 10) ? "0" + i : i;
-    }
+  // Umbrella Man Script
+  const umbrella = document.getElementById('umbrellaMan');
+  const deathOverlay = document.getElementById('deathOverlay');
+  let mouseX = 0, mouseY = 0;
+  let umbrellaX = -200, umbrellaY = -200;
 
-    // Umbrella Man Script
-    const umbrella = document.getElementById('umbrellaMan');
-    const deathOverlay = document.getElementById('deathOverlay');
-    let mouseX = 0, mouseY = 0;
-    let umbrellaX = -200, umbrellaY = -200;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
 
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
 
-    function lerp(a, b, t) {
-      return a + (b - a) * t;
-    }
+  function updateUmbrella() {
+    umbrellaX = lerp(umbrellaX, mouseX, 0.01);
+    umbrellaY = lerp(umbrellaY, mouseY, 0.01);
 
-    function updateUmbrella() {
-      umbrellaX = lerp(umbrellaX, mouseX, 0.01);
-      umbrellaY = lerp(umbrellaY, mouseY, 0.01);
+    umbrella.style.left = umbrellaX + 'px';
+    umbrella.style.top = umbrellaY + 'px';
 
-      umbrella.style.left = umbrellaX + 'px';
-      umbrella.style.top = umbrellaY + 'px';
+    const dx = umbrellaX - mouseX;
+    const dy = umbrellaY - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-      const dx = umbrellaX - mouseX;
-      const dy = umbrellaY - mouseY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < 32) {
-        deathOverlay.style.display = 'block';
-        document.body.innerHTML = '';
-        document.body.appendChild(deathOverlay);
-      } else {
-        requestAnimationFrame(updateUmbrella);
-      }
-    }
-
-    setTimeout(() => {
+    if (dist < 32) {
+      deathOverlay.style.display = 'block';
+      document.body.innerHTML = '';
+      document.body.appendChild(deathOverlay);
+    } else {
       requestAnimationFrame(updateUmbrella);
-    }, 5000); // 5s delay before chase
-  </script>
+    }
+  }
+
+  setTimeout(() => {
+    requestAnimationFrame(updateUmbrella);
+  }, 5000);
+
+  // Notification Script
+  async function checkNotif() {
+    const notifUrl = "https://raw.githubusercontent.com/axolotl-in-void/gaq10/main/notif.txt";
+
+    try {
+      const res = await fetch(notifUrl, { cache: "no-store" });
+      const text = await res.text();
+      const trimmedText = text.trim();
+
+      if (trimmedText.length === 0) return;
+
+      const lastNotif = localStorage.getItem("gaq10_last_notif");
+      if (lastNotif === trimmedText) return;
+
+      const titleMatch = trimmedText.match(/Title:\s*(.+)/i);
+      const contentMatch = trimmedText.match(/Content:\s*(.+)/i);
+      const title = titleMatch ? titleMatch[1] : "QAG10 Ping";
+      const body = contentMatch ? contentMatch[1] : "Check the site for updates.";
+
+      let shown = false;
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          new Notification(title, {
+            body: body,
+            icon: "sbox.jpg"
+          });
+          shown = true;
+        } else if (Notification.permission !== "denied") {
+          const permission = await Notification.requestPermission();
+          if (permission === "granted") {
+            new Notification(title, {
+              body: body,
+              icon: "sbox.jpg"
+            });
+            shown = true;
+          }
+        }
+      }
+
+      if (!shown) {
+        alert(`[${title}]\n${body}`);
+      }
+
+      localStorage.setItem("gaq10_last_notif", trimmedText);
+    } catch (err) {
+      console.error("Notification fetch failed:", err);
+    }
+  }
+
+  window.addEventListener("load", () => {
+    setTimeout(startTime, 500);
+    setTimeout(checkNotif, 2000);
+  });
+</script>
+
 
 </body>
 </html>
