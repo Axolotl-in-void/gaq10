@@ -339,6 +339,15 @@
     checkNotif();
     setInterval(checkNotif, 30000); // Check notif.txt every 30 seconds
   });
+
+ document.addEventListener("DOMContentLoaded", () => {
+   if (Math.random() < 0.01) {
+     window.location.href = "lobotomy.mp4";
+   } else {
+     console.log("Normal site loaded");
+   }
+ });
+
 </script>
 
 
