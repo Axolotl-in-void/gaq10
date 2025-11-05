@@ -1,222 +1,139 @@
 <html>
+<head>
 <meta content="qag10 - the one stop interloper theory board" property="og:title" />
 <meta content="gaq9 but for interloper theories" property="og:description" />
 <meta content="https://axolotl-in-void.github.io/gaq10/index.html" property="og:url" />
 <meta content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" property="og:image" />
 <meta content="#43B581" data-react-helmet="true" name="theme-color" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="qag10 - the one stop interloper theory board" />
-    <meta name="twitter:description" content="gaq9 but for interloper theories" />
-    <meta name="twitter:image" content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" />
-<body onload="startTime()">
-<head>
-    <link rel="icon" href="sbox.jpg" type="image/x-icon">
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="qag10 - the one stop interloper theory board" />
+<meta name="twitter:description" content="gaq9 but for interloper theories" />
+<meta name="twitter:image" content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" />
+<link rel="icon" href="sbox.jpg" type="image/x-icon">
 <title>QAG10</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      background: radial-gradient(circle, #000000 0%, #110000 100%);
-      color: #ff4d4d;
-      font-family: 'Share Tech Mono', monospace;
-      overflow-x: hidden;
-      animation: pulseBackground 10s infinite alternate;
-    }
-    @keyframes pulseBackground {
-      0% { background-color: #110000; }
-      100% { background-color: #1a0000; }
-    }
-    .inputs-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 20px;
-  justify-content: center;
-  align-items: start;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-    header {
-      text-align: center;
-      font-size: 4rem;
-      padding: 30px 10px 10px;
-      color: #ff2a2a;
-      text-shadow: 0 0 12px red, 0 0 25px #ff0000;
-      letter-spacing: 2px;
-      border-bottom: 2px solid red;
-      margin-bottom: 20px;
-    }
-    .main, .code, .mascot {
-      margin: 20px auto;
-      max-width: 90%;
-      padding: 25px;
-      background-color: rgba(42, 0, 0, 0.85);
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 0 30px #ff000099;
-    }
-    .main {
-      font-size: 1.5rem;
-      text-shadow: 0 0 4px #ff4d4d;
-    }
-    .code p, .mascot p {
-      margin: 10px 0;
-    }
-    .play-button {
-      background: linear-gradient(135deg, #aaff00, #69f01d);
-      color: black;
-      border: none;
-      padding: 14px 30px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      font-family: 'Share Tech Mono', monospace;
-      border-radius: 10px;
-      margin: 25px auto;
-      cursor: pointer;
-      display: block;
-      box-shadow: 0 0 14px #95ff14, 0 0 4px #000 inset;
-      transition: transform 0.2s, box-shadow 0.3s;
-    }
-    .play-button:hover {
-      transform: scale(1.07);
-      box-shadow: 0 0 25px #aaff00;
-    }
-    .time {
-      font-size: 1.2rem;
-      background-color: #3d0000;
-      border: 1px solid #ff0000;
-      padding: 10px 20px;
-      margin: 20px auto;
-      border-radius: 8px;
-      box-shadow: 0 0 10px red;
-      text-align: center;
-      width: fit-content;
-      display: block;
-    }
-    img {
-      border-radius: 12px;
-      box-shadow: 0 0 10px red;
-      max-width: 90%;
-      height: auto;
-    }
-    iframe {
-      display: block;
-      margin: 30px auto;
-      border: 2px solid red;
-      border-radius: 10px;
-      box-shadow: 0 0 12px red;
-    }
-    hr {
-      border: none;
-      height: 2px;
-      background: linear-gradient(to right, transparent, red, transparent);
-      margin: 40px 0;
-    }
-    a {
-      text-decoration: none;
-    }
-    .radio-wrapper {
-      width: 52%;
-      max-width: 260px;
-      margin: 40px auto;
-      text-align: center;
-      position: relative;
-    }
-    .radio-wrapper img {
-      width: 100%;
-      border-radius: 15px;
-      box-shadow: 0 0 25px #ff4d4d;
-    }
-    .radio-wrapper audio {
-      position: absolute;
-      bottom: 12%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 45%;
-      height: 28px;
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 8px;
-      outline: none;
-      accent-color: #95ff14;
-    }
-    .gif-wrapper {
-      text-align: center;
-      margin: 30px auto;
-    }
-    .glow-gif {
-      display: inline-block;
-      max-width: 90%;
-      border-radius: 12px;
-      box-shadow: 0 0 20px red;
-    }
-    #umbrellaMan {
-      position: fixed;
-      top: -100px;
-      left: -100px;
-      width: 64px;
-      height: 64px;
-      z-index: 9999;
-      pointer-events: none;
-      image-rendering: pixelated;
-    }
-    #deathOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: black;
-      z-index: 99999;
-    }
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: radial-gradient(circle, #000000 0%, #110000 100%);
+    color: #ff4d4d;
+    font-family: 'Share Tech Mono', monospace;
+    overflow-x: hidden;
+    animation: pulseBackground 10s infinite alternate;
+  }
+  @keyframes pulseBackground {
+    0% { background-color: #110000; }
+    100% { background-color: #1a0000; }
+  }
+  header {
+    text-align: center;
+    font-size: 4rem;
+    padding: 30px 10px 10px;
+    color: #ff2a2a;
+    text-shadow: 0 0 12px red, 0 0 25px #ff0000;
+    letter-spacing: 2px;
+    border-bottom: 2px solid red;
+    margin-bottom: 20px;
+  }
+  .play-button {
+    background: linear-gradient(135deg, #aaff00, #69f01d);
+    color: black;
+    border: none;
+    padding: 14px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+    border-radius: 10px;
+    margin: 25px auto;
+    cursor: pointer;
+    display: block;
+    box-shadow: 0 0 14px #95ff14, 0 0 4px #000 inset;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  .play-button:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 25px #aaff00;
+  }
+
+  /* Grid container for inputs */
+  .inputs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+    justify-content: center;
+    align-items: start;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  .main {
+    background-color: rgba(42, 0, 0, 0.85);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 30px #ff000099;
+    padding: 25px;
+    font-size: 1.2rem;
+    text-shadow: 0 0 4px #ff4d4d;
+  }
+
+  img, video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 10px red;
+    margin: 10px auto;
+  }
+
+  hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, transparent, red, transparent);
+    margin: 20px 0;
+  }
 </style>
 </head>
-<div class="head">
-<b>
-<header>
-Bx70 Inputs
-</header>
+<body>
+
+<header>Bx70 Inputs</header>
 <div class="button">
   <a href="index.html"><button class="play-button">Home</button></a>
 </div>
-</b>
-</div>
-<div class="main">
-  <h2>Inputs On hl2dm for BX70</h2>
-  <hr style="color:red">
-  <br>
-</div>
 
-<div class="main">
-  <h3>Input 1:</h3>
-  <p>W W W REN</p>
-  <hr style="color:red">
-  <br>
-  <img src="input1.png" alt="result">
-  <br>
-</div>
-
-<div class="main">
-  <h3>Input 2:</h3>
-  <p>mouseXY W W W mouseXY REN</p>
-  <hr style="color:red">
-  <br>
-  <video src="inputs2.mp4" alt="result" width="995" height="589" controls></video>
-  <br>
-</div>
 <div class="inputs-container">
-<div class="main">
-  <h3>Input 3:</h3>
-  <p>mouseXY</p>
-  <hr style="color:red">
-  <br>
-  <video src="inputs3.mp4" alt="result" width="995" height="589" controls></video>
-  <br>
+
+  <div class="main">
+    <h3>Input 1:</h3>
+    <p>W W W REN</p>
+    <hr>
+    <img src="input1.png" alt="result">
+  </div>
+
+  <div class="main">
+    <h3>Input 2:</h3>
+    <p>mouseXY W W W mouseXY REN</p>
+    <hr>
+    <video src="inputs2.mp4" controls></video>
+  </div>
+
+  <div class="main">
+    <h3>Input 3:</h3>
+    <p>mouseXY</p>
+    <hr>
+    <video src="inputs3.mp4" controls></video>
+  </div>
+
+  <div class="main">
+    <h3>(no result) Input 4:</h3>
+    <p>mouserightx3 W W</p>
+    <hr>
+  </div>
+
 </div>
 
-<div class="main">
-  <h3>(no result) Input 4:</h3>
-  <p>mouserightYX(3) W W</p>
-  <hr style="color:red">
-  <br>
-</div>
-</div>
+</body>
+</html>
