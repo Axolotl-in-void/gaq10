@@ -66,13 +66,35 @@
     box-shadow: 0 0 15px red;
   }
   #frameToggle {
+    margin-top: 15px;
+    padding: 14px 30px 14px 30px; /* same padding as Home button */
+    background: linear-gradient(135deg, #aaff00, #69f01d);
+    color: black;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-block;
+    box-shadow: 0 0 14px #95ff14, 0 0 4px #000 inset;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  #frameToggle:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 25px #aaff00;
+  }
+
+  #frameControls {
     margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #222;
+  }
+  #frameControls button {
+    background: #222;
     color: #ff4d4d;
     border: 1px solid #ff4d4d;
-    border-radius: 8px;
+    padding: 8px 16px;
+    margin: 0 5px;
     cursor: pointer;
+    border-radius: 8px;
     font-family: 'Share Tech Mono', monospace;
   }
 
@@ -105,7 +127,12 @@
   .tile p {
     font-size: 0.9rem;
     color: #ff6666;
-    margin-top: 8px;
+    margin-top: 4px;
+  }
+  .tile .renderType {
+    font-size: 0.8rem;
+    color: #ffaa00;
+    margin-bottom: 4px;
   }
 </style>
 </head>
@@ -116,14 +143,16 @@
   <a href="index.html"><button class="play-button">Home</button></a>
 </div>
 
-<!-- Big viewer/player -->
 <div class="viewer" id="viewer">
   <h2 id="viewer-title">Select an Input</h2>
   <p id="viewer-text">Click any tile below to view.</p>
   <button id="frameToggle" style="display:none;">Switch to Frame-by-Frame</button>
+  <div id="frameControls" style="display:none;">
+    <button id="frameBack">⏪ Frame Back</button>
+    <button id="frameForward">⏩ Frame Forward</button>
+  </div>
 </div>
 
-<!-- Tiled menu -->
 <div class="inputs-container" id="inputs"></div>
 
 <script>
@@ -140,37 +169,38 @@ const viewer = document.getElementById("viewer");
 const viewerTitle = document.getElementById("viewer-title");
 const viewerText = document.getElementById("viewer-text");
 const frameToggle = document.getElementById("frameToggle");
+const frameControls = document.getElementById("frameControls");
+const frameBack = document.getElementById("frameBack");
+const frameForward = document.getElementById("frameForward");
 
 let currentVideo = null;
 let frameMode = false;
-let fps = 30; // adjust for frame-by-frame stepping
+const fps = 30;
 
-// build grid
+// Build tiles with render type above content
 inputs.forEach((item, i) => {
   const tile = document.createElement("div");
   tile.className = "tile";
-  let content = "";
-  if (item.image) {
-    content = `<img src="${item.image}" alt="input ${i+1}">`;
-  } else if (item.video) {
-    content = `<video src="${item.video}" preload="metadata"></video>`;
-  } else if (item.noResult) {
-    content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`;
-  } else if (item.notRendered) {
-    content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Not rendered yet</div>`;
-  }
-  tile.innerHTML = `${content}<p>${item.text}</p>`;
+  let renderType = '';
+  let content = '';
+  if (item.image) { renderType = 'Image'; content = `<img src="${item.image}" alt="input ${i+1}">`; }
+  else if (item.video) { renderType = 'Video'; content = `<video src="${item.video}" preload="metadata"></video>`; }
+  else if (item.noResult) { renderType = 'No Result'; content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`; }
+  else if (item.notRendered) { renderType = 'Not Rendered Yet'; content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Not rendered yet</div>`; }
+
+  tile.innerHTML = `<div class="renderType">${renderType}</div>${content}<p>${item.text}</p>`;
   tile.addEventListener("click", () => loadToViewer(item, i));
   inputsDiv.appendChild(tile);
 });
 
 function loadToViewer(item, index) {
   frameMode = false;
+  frameControls.style.display = 'none';
   frameToggle.style.display = 'none';
+  currentVideo = null;
+
   viewerTitle.textContent = `Input ${index+1}`;
   viewerText.textContent = item.text;
-
-  // Clear previous content
   viewer.querySelectorAll('video,img').forEach(el => el.remove());
 
   if (item.image) {
@@ -193,25 +223,27 @@ function loadToViewer(item, index) {
   }
 }
 
-// frame-by-frame toggle
+// Toggle frame-by-frame mode
 frameToggle.addEventListener('click', () => {
   if (!currentVideo) return;
   if (!frameMode) {
     frameMode = true;
     currentVideo.pause();
+    currentVideo.controls = false;
     frameToggle.textContent = 'Switch to Video Playback';
-    // enable arrow keys for frame stepping
-    document.onkeydown = e => {
-      if (e.key === 'ArrowRight') currentVideo.currentTime += 1/fps;
-      if (e.key === 'ArrowLeft') currentVideo.currentTime -= 1/fps;
-    };
+    frameControls.style.display = 'block';
   } else {
     frameMode = false;
+    currentVideo.controls = true;
     currentVideo.play();
     frameToggle.textContent = 'Switch to Frame-by-Frame';
-    document.onkeydown = null;
+    frameControls.style.display = 'none';
   }
 });
+
+// Frame-by-frame buttons
+frameBack.addEventListener('click', () => { if(currentVideo) currentVideo.currentTime -= 1/fps; });
+frameForward.addEventListener('click', () => { if(currentVideo) currentVideo.currentTime += 1/fps; });
 </script>
 
 </body>
