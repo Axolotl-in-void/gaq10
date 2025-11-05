@@ -1,21 +1,21 @@
+<!DOCTYPE html>
 <html>
 <head>
 <meta content="qag10 - the one stop interloper theory board" property="og:title" />
 <meta content="gaq9 but for interloper theories" property="og:description" />
 <meta content="https://axolotl-in-void.github.io/gaq10/index.html" property="og:url" />
 <meta content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" property="og:image" />
-<meta content="#43B581" data-react-helmet="true" name="theme-color" />
+<meta content="#43B581" name="theme-color" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="qag10 - the one stop interloper theory board" />
 <meta name="twitter:description" content="gaq9 but for interloper theories" />
 <meta name="twitter:image" content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" />
 <link rel="icon" href="sbox.jpg" type="image/x-icon">
 <title>QAG10</title>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
   body {
     margin: 0;
     background: radial-gradient(circle, #000000 0%, #110000 100%);
@@ -34,7 +34,6 @@
     padding: 30px 10px 10px;
     color: #ff2a2a;
     text-shadow: 0 0 12px red, 0 0 25px #ff0000;
-    letter-spacing: 2px;
     border-bottom: 2px solid red;
     margin-bottom: 20px;
   }
@@ -45,7 +44,6 @@
     padding: 14px 30px;
     font-size: 1.2rem;
     font-weight: bold;
-    font-family: 'Share Tech Mono', monospace;
     border-radius: 10px;
     margin: 25px auto;
     cursor: pointer;
@@ -58,7 +56,6 @@
     box-shadow: 0 0 25px #aaff00;
   }
 
-  /* Grid container for inputs */
   .inputs-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -69,7 +66,6 @@
     margin: 0 auto;
     padding: 0 20px 40px;
   }
-
   .main {
     background-color: rgba(42, 0, 0, 0.85);
     border-radius: 12px;
@@ -79,21 +75,59 @@
     font-size: 1.2rem;
     text-shadow: 0 0 4px #ff4d4d;
   }
-
   img, video {
     display: block;
     max-width: 100%;
-    height: auto;
     border-radius: 12px;
     box-shadow: 0 0 10px red;
     margin: 10px auto;
+    cursor: pointer;
   }
-
   hr {
     border: none;
     height: 2px;
     background: linear-gradient(to right, transparent, red, transparent);
     margin: 20px 0;
+  }
+
+  /* Overlay for zoomed video */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    flex-direction: column;
+  }
+  .overlay video {
+    max-width: 90%;
+    max-height: 80vh;
+    transform-origin: center;
+  }
+  .close-btn {
+    margin-top: 20px;
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    cursor: pointer;
+  }
+  .controls {
+    margin-top: 10px;
+  }
+  .controls button {
+    background: #222;
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    padding: 6px 12px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Share Tech Mono', monospace;
   }
 </style>
 </head>
@@ -104,36 +138,79 @@
   <a href="index.html"><button class="play-button">Home</button></a>
 </div>
 
-<div class="inputs-container">
+<div class="inputs-container" id="inputs"></div>
 
-  <div class="main">
-    <h3>Input 1:</h3>
-    <p>W W W REN</p>
-    <hr>
-    <img src="input1.png" alt="result">
-  </div>
+<script>
+// ✅ Easy configuration: just add your videos/images/text here
+const inputs = [
+  { text: "W W W REN", image: "input1.png" },
+  { text: "mouseXY W W W mouseXY REN", video: "inputs2.mp4" },
+  { text: "mouseXY", video: "inputs3.mp4" },
+  { text: "mousXY(3X) W W", noResult: true }
+];
 
-  <div class="main">
-    <h3>Input 2:</h3>
-    <p>mouseXY W W W mouseXY REN</p>
-    <hr>
-    <video src="inputs2.mp4" controls></video>
-  </div>
+// Generate content dynamically
+const container = document.getElementById("inputs");
+inputs.forEach((item, i) => {
+  const div = document.createElement("div");
+  div.className = "main";
+  div.innerHTML = `<h3>Input ${i+1}:</h3>
+                   <p>${item.text}</p>
+                   <hr>
+                   ${item.image ? `<img src="${item.image}" alt="result">` :
+                     item.video ? `<video src="${item.video}" controls></video>` :
+                     item.noResult ? "<p>(no result)</p>" : ""}`;
+  container.appendChild(div);
+});
 
-  <div class="main">
-    <h3>Input 3:</h3>
-    <p>mouseXY</p>
-    <hr>
-    <video src="inputs3.mp4" controls></video>
-  </div>
+// Frame-by-frame + zoom feature
+document.body.addEventListener("click", e => {
+  if (e.target.tagName === "VIDEO") {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    const vid = e.target.cloneNode(true);
+    vid.removeAttribute("controls");
+    vid.play();
+    overlay.appendChild(vid);
 
-  <div class="main">
-    <h3>(no result) Input 4:</h3>
-    <p>mouserightx3 W W</p>
-    <hr>
-  </div>
+    const controls = document.createElement("div");
+    controls.className = "controls";
+    controls.innerHTML = `
+      <button id="rew">⏪ Frame Back</button>
+      <button id="fwd">⏩ Frame Forward</button>
+      <button id="zoomIn">🔍+</button>
+      <button id="zoomOut">🔍−</button>
+    `;
+    overlay.appendChild(controls);
 
-</div>
+    const close = document.createElement("button");
+    close.className = "close-btn";
+    close.textContent = "Close";
+    close.onclick = () => overlay.remove();
+    overlay.appendChild(close);
+    document.body.appendChild(overlay);
+
+    let zoom = 1;
+    const fps = 30; // adjust if needed
+    document.getElementById("fwd").onclick = () => {
+      vid.pause();
+      vid.currentTime += 1 / fps;
+    };
+    document.getElementById("rew").onclick = () => {
+      vid.pause();
+      vid.currentTime -= 1 / fps;
+    };
+    document.getElementById("zoomIn").onclick = () => {
+      zoom += 0.2;
+      vid.style.transform = `scale(${zoom})`;
+    };
+    document.getElementById("zoomOut").onclick = () => {
+      zoom = Math.max(1, zoom - 0.2);
+      vid.style.transform = `scale(${zoom})`;
+    };
+  }
+});
+</script>
 
 </body>
 </html>
