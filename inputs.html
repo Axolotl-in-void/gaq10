@@ -53,7 +53,7 @@
 
   .viewer {
     max-width: 1000px;
-    margin: 0 auto 30px;
+    margin: 0 auto 10px;
     background-color: rgba(42, 0, 0, 0.85);
     border-radius: 12px;
     box-shadow: 0 0 30px #ff000099;
@@ -64,6 +64,16 @@
     max-width: 100%;
     border-radius: 12px;
     box-shadow: 0 0 15px red;
+  }
+  #frameToggle {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #222;
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
   }
 
   .inputs-container {
@@ -110,23 +120,32 @@
 <div class="viewer" id="viewer">
   <h2 id="viewer-title">Select an Input</h2>
   <p id="viewer-text">Click any tile below to view.</p>
+  <button id="frameToggle" style="display:none;">Switch to Frame-by-Frame</button>
 </div>
 
 <!-- Tiled menu -->
 <div class="inputs-container" id="inputs"></div>
 
 <script>
-// ✅ EASY CONFIG: add your inputs here
 const inputs = [
   { text: "W W W REN", image: "input1.png" },
   { text: "mouseXR W W W mouseXY REN", video: "inputs2.mp4" },
   { text: "mouseXR", video: "inputs3.mp4" },
   { text: "mouseXR(3) W W", noResult: true },
-  { text: "mouseXR(2) W W W", noResult: true }
+  { text: "mouseXR(2) W W W", notRendered: true }
 ];
 
-// build grid
 const inputsDiv = document.getElementById("inputs");
+const viewer = document.getElementById("viewer");
+const viewerTitle = document.getElementById("viewer-title");
+const viewerText = document.getElementById("viewer-text");
+const frameToggle = document.getElementById("frameToggle");
+
+let currentVideo = null;
+let frameMode = false;
+let fps = 30; // adjust for frame-by-frame stepping
+
+// build grid
 inputs.forEach((item, i) => {
   const tile = document.createElement("div");
   tile.className = "tile";
@@ -135,20 +154,25 @@ inputs.forEach((item, i) => {
     content = `<img src="${item.image}" alt="input ${i+1}">`;
   } else if (item.video) {
     content = `<video src="${item.video}" preload="metadata"></video>`;
-  } else {
+  } else if (item.noResult) {
     content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`;
+  } else if (item.notRendered) {
+    content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Not rendered yet</div>`;
   }
   tile.innerHTML = `${content}<p>${item.text}</p>`;
   tile.addEventListener("click", () => loadToViewer(item, i));
   inputsDiv.appendChild(tile);
 });
 
-const viewer = document.getElementById("viewer");
-const viewerTitle = document.getElementById("viewer-title");
-const viewerText = document.getElementById("viewer-text");
-
 function loadToViewer(item, index) {
-  viewer.innerHTML = `<h2>Input ${index+1}</h2><p>${item.text}</p>`;
+  frameMode = false;
+  frameToggle.style.display = 'none';
+  viewerTitle.textContent = `Input ${index+1}`;
+  viewerText.textContent = item.text;
+
+  // Clear previous content
+  viewer.querySelectorAll('video,img').forEach(el => el.remove());
+
   if (item.image) {
     const img = document.createElement("img");
     img.src = item.image;
@@ -158,11 +182,36 @@ function loadToViewer(item, index) {
     vid.src = item.video;
     vid.controls = true;
     vid.autoplay = true;
+    currentVideo = vid;
     viewer.appendChild(vid);
-  } else {
-    viewer.innerHTML += "<p>(no result)</p>";
+    frameToggle.style.display = 'inline-block';
+    frameToggle.textContent = 'Switch to Frame-by-Frame';
+  } else if (item.noResult) {
+    viewerText.textContent += " (no result)";
+  } else if (item.notRendered) {
+    viewerText.textContent += " (not rendered yet)";
   }
 }
+
+// frame-by-frame toggle
+frameToggle.addEventListener('click', () => {
+  if (!currentVideo) return;
+  if (!frameMode) {
+    frameMode = true;
+    currentVideo.pause();
+    frameToggle.textContent = 'Switch to Video Playback';
+    // enable arrow keys for frame stepping
+    document.onkeydown = e => {
+      if (e.key === 'ArrowRight') currentVideo.currentTime += 1/fps;
+      if (e.key === 'ArrowLeft') currentVideo.currentTime -= 1/fps;
+    };
+  } else {
+    frameMode = false;
+    currentVideo.play();
+    frameToggle.textContent = 'Switch to Frame-by-Frame';
+    document.onkeydown = null;
+  }
+});
 </script>
 
 </body>
