@@ -29,6 +29,15 @@
       0% { background-color: #110000; }
       100% { background-color: #1a0000; }
     }
+    .inputs-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
     header {
       text-align: center;
       font-size: 4rem;
@@ -194,7 +203,7 @@ Bx70 Inputs
   <video src="inputs2.mp4" alt="result" width="995" height="589" controls></video>
   <br>
 </div>
-
+<div class="inputs-container">
 <div class="main">
   <h3>Input 3:</h3>
   <p>mouseXY</p>
@@ -210,4 +219,4 @@ Bx70 Inputs
   <hr style="color:red">
   <br>
 </div>
-
+</div>
