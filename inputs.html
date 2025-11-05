@@ -53,7 +53,7 @@
 
   .viewer {
     max-width: 1000px;
-    margin: 0 auto 10px;
+    margin: 0 auto 20px;
     background-color: rgba(42, 0, 0, 0.85);
     border-radius: 12px;
     box-shadow: 0 0 30px #ff000099;
@@ -65,9 +65,10 @@
     border-radius: 12px;
     box-shadow: 0 0 15px red;
   }
+
   #frameToggle {
     margin-top: 15px;
-    padding: 14px 30px 14px 30px; /* same padding as Home button */
+    padding: 14px 30px;
     background: linear-gradient(135deg, #aaff00, #69f01d);
     color: black;
     border: none;
@@ -84,18 +85,61 @@
     box-shadow: 0 0 25px #aaff00;
   }
 
+  /* Frame controls spacing */
   #frameControls {
-    margin-top: 10px;
+    margin-top: 20px; /* padding between video and buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
   }
-  #frameControls button {
-    background: #222;
-    color: #ff4d4d;
-    border: 1px solid #ff4d4d;
-    padding: 8px 16px;
-    margin: 0 5px;
+
+  /* Frame buttons (Home button style) */
+  #frameControls button, #frameSlider {
+    background: linear-gradient(135deg, #aaff00, #69f01d);
+    color: black;
+    border: none;
+    font-weight: bold;
+    padding: 12px 25px;
+    border-radius: 10px;
     cursor: pointer;
-    border-radius: 8px;
     font-family: 'Share Tech Mono', monospace;
+    box-shadow: 0 0 14px #95ff14, 0 0 4px #000 inset;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  #frameControls button:hover, #frameSlider:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px #aaff00;
+  }
+
+  /* Slider styling */
+  #frameSlider {
+    -webkit-appearance: none;
+    width: 400px;
+    max-width: 80%;
+    height: 14px;
+    outline: none;
+    background: #2a0000;
+    border-radius: 7px;
+  }
+  #frameSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #69f01d;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #95ff14;
+  }
+  #frameSlider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #69f01d;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #95ff14;
   }
 
   .inputs-container {
@@ -127,12 +171,16 @@
   .tile p {
     font-size: 0.9rem;
     color: #ff6666;
-    margin-top: 4px;
+    margin-top: 8px;
   }
-  .tile .renderType {
-    font-size: 0.8rem;
+
+  /* Tiles render label as Input number */
+  .tile .inputLabel {
+    font-size: 0.85rem;
     color: #ffaa00;
     margin-bottom: 4px;
+    font-weight: bold;
+    text-align: center;
   }
 </style>
 </head>
@@ -149,6 +197,7 @@
   <button id="frameToggle" style="display:none;">Switch to Frame-by-Frame</button>
   <div id="frameControls" style="display:none;">
     <button id="frameBack">⏪ Frame Back</button>
+    <input type="range" id="frameSlider" min="0" max="100" value="0">
     <button id="frameForward">⏩ Frame Forward</button>
   </div>
 </div>
@@ -172,23 +221,24 @@ const frameToggle = document.getElementById("frameToggle");
 const frameControls = document.getElementById("frameControls");
 const frameBack = document.getElementById("frameBack");
 const frameForward = document.getElementById("frameForward");
+const frameSlider = document.getElementById("frameSlider");
 
 let currentVideo = null;
 let frameMode = false;
 const fps = 30;
 
-// Build tiles with render type above content
+// Build tiles
 inputs.forEach((item, i) => {
   const tile = document.createElement("div");
   tile.className = "tile";
-  let renderType = '';
   let content = '';
-  if (item.image) { renderType = 'Image'; content = `<img src="${item.image}" alt="input ${i+1}">`; }
-  else if (item.video) { renderType = 'Video'; content = `<video src="${item.video}" preload="metadata"></video>`; }
-  else if (item.noResult) { renderType = 'No Result'; content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`; }
-  else if (item.notRendered) { renderType = 'Not Rendered Yet'; content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Not rendered yet</div>`; }
+  if (item.image) { content = `<img src="${item.image}">`; }
+  else if (item.video) { content = `<video src="${item.video}" preload="metadata"></video>`; }
+  else if (item.noResult) { content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`; }
+  else if (item.notRendered) { content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Not rendered yet</div>`; }
 
-  tile.innerHTML = `<div class="renderType">${renderType}</div>${content}<p>${item.text}</p>`;
+  // Add input label at top
+  tile.innerHTML = `<div class="inputLabel">Input ${i+1}</div>` + content + `<p>${item.text}</p>`;
   tile.addEventListener("click", () => loadToViewer(item, i));
   inputsDiv.appendChild(tile);
 });
@@ -216,24 +266,26 @@ function loadToViewer(item, index) {
     viewer.appendChild(vid);
     frameToggle.style.display = 'inline-block';
     frameToggle.textContent = 'Switch to Frame-by-Frame';
-  } else if (item.noResult) {
-    viewerText.textContent += " (no result)";
-  } else if (item.notRendered) {
-    viewerText.textContent += " (not rendered yet)";
-  }
+
+    // update slider max when metadata loads
+    vid.addEventListener('loadedmetadata', () => {
+      frameSlider.max = Math.floor(vid.duration * fps);
+      frameSlider.value = 0;
+    });
+  } else if (item.noResult) { viewerText.textContent += " (no result)"; }
+  else if (item.notRendered) { viewerText.textContent += " (not rendered yet)"; }
 }
 
 // Toggle frame-by-frame mode
 frameToggle.addEventListener('click', () => {
   if (!currentVideo) return;
-  if (!frameMode) {
-    frameMode = true;
+  frameMode = !frameMode;
+  if (frameMode) {
     currentVideo.pause();
     currentVideo.controls = false;
     frameToggle.textContent = 'Switch to Video Playback';
-    frameControls.style.display = 'block';
+    frameControls.style.display = 'flex';
   } else {
-    frameMode = false;
     currentVideo.controls = true;
     currentVideo.play();
     frameToggle.textContent = 'Switch to Frame-by-Frame';
@@ -241,9 +293,29 @@ frameToggle.addEventListener('click', () => {
   }
 });
 
-// Frame-by-frame buttons
-frameBack.addEventListener('click', () => { if(currentVideo) currentVideo.currentTime -= 1/fps; });
-frameForward.addEventListener('click', () => { if(currentVideo) currentVideo.currentTime += 1/fps; });
+// Frame buttons
+frameBack.addEventListener('click', () => { 
+  if(currentVideo) { 
+    currentVideo.currentTime = Math.max(0, currentVideo.currentTime - 1/fps); 
+    updateSlider(); 
+  } 
+});
+frameForward.addEventListener('click', () => { 
+  if(currentVideo) { 
+    currentVideo.currentTime = Math.min(currentVideo.duration, currentVideo.currentTime + 1/fps); 
+    updateSlider(); 
+  } 
+});
+
+// Frame slider
+frameSlider.addEventListener('input', () => {
+  if(currentVideo) currentVideo.currentTime = frameSlider.value / fps;
+});
+
+function updateSlider() {
+  if(currentVideo) frameSlider.value = Math.floor(currentVideo.currentTime * fps);
+}
+setInterval(updateSlider, 100); // keep slider in sync
 </script>
 
 </body>
