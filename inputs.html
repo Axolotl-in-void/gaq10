@@ -6,10 +6,6 @@
 <meta content="https://axolotl-in-void.github.io/gaq10/index.html" property="og:url" />
 <meta content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" property="og:image" />
 <meta content="#43B581" name="theme-color" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="qag10 - the one stop interloper theory board" />
-<meta name="twitter:description" content="gaq9 but for interloper theories" />
-<meta name="twitter:image" content="https://axolotl-in-void.github.io/gaq10/sbox.jpg" />
 <link rel="icon" href="sbox.jpg" type="image/x-icon">
 <title>QAG10</title>
 
@@ -21,7 +17,6 @@
     background: radial-gradient(circle, #000000 0%, #110000 100%);
     color: #ff4d4d;
     font-family: 'Share Tech Mono', monospace;
-    overflow-x: hidden;
     animation: pulseBackground 10s infinite alternate;
   }
   @keyframes pulseBackground {
@@ -56,78 +51,51 @@
     box-shadow: 0 0 25px #aaff00;
   }
 
-  .inputs-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-    justify-content: center;
-    align-items: start;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 20px 40px;
-  }
-  .main {
+  .viewer {
+    max-width: 1000px;
+    margin: 0 auto 30px;
     background-color: rgba(42, 0, 0, 0.85);
     border-radius: 12px;
-    text-align: center;
     box-shadow: 0 0 30px #ff000099;
-    padding: 25px;
-    font-size: 1.2rem;
-    text-shadow: 0 0 4px #ff4d4d;
+    padding: 20px;
+    text-align: center;
   }
-  img, video {
-    display: block;
+  .viewer video, .viewer img {
     max-width: 100%;
     border-radius: 12px;
-    box-shadow: 0 0 10px red;
-    margin: 10px auto;
-    cursor: pointer;
-  }
-  hr {
-    border: none;
-    height: 2px;
-    background: linear-gradient(to right, transparent, red, transparent);
-    margin: 20px 0;
+    box-shadow: 0 0 15px red;
   }
 
-  /* Overlay for zoomed video */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    flex-direction: column;
+  .inputs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
   }
-  .overlay video {
-    max-width: 90%;
-    max-height: 80vh;
-    transform-origin: center;
+  .tile {
+    background-color: rgba(42, 0, 0, 0.85);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px #ff000055;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .close-btn {
-    margin-top: 20px;
-    background: red;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+  .tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px #ff000099;
+  }
+  .tile img, .tile video {
+    width: 100%;
+    height: auto;
     border-radius: 8px;
-    font-family: 'Share Tech Mono', monospace;
-    cursor: pointer;
   }
-  .controls {
-    margin-top: 10px;
-  }
-  .controls button {
-    background: #222;
-    color: #ff4d4d;
-    border: 1px solid #ff4d4d;
-    padding: 6px 12px;
-    margin: 0 5px;
-    cursor: pointer;
-    border-radius: 6px;
-    font-family: 'Share Tech Mono', monospace;
+  .tile p {
+    font-size: 0.9rem;
+    color: #ff6666;
+    margin-top: 8px;
   }
 </style>
 </head>
@@ -138,78 +106,63 @@
   <a href="index.html"><button class="play-button">Home</button></a>
 </div>
 
+<!-- Big viewer/player -->
+<div class="viewer" id="viewer">
+  <h2 id="viewer-title">Select an Input</h2>
+  <p id="viewer-text">Click any tile below to view.</p>
+</div>
+
+<!-- Tiled menu -->
 <div class="inputs-container" id="inputs"></div>
 
 <script>
-// ✅ Easy configuration: just add your videos/images/text here
+// ✅ EASY CONFIG: add your inputs here
 const inputs = [
   { text: "W W W REN", image: "input1.png" },
   { text: "mouseXY W W W mouseXY REN", video: "inputs2.mp4" },
   { text: "mouseXY", video: "inputs3.mp4" },
-  { text: "mousXY(3X) W W", noResult: true }
+  { text: "mouserightx3 W W", noResult: true },
+  { text: "Test image sample", image: "sbox.jpg" }
 ];
 
-// Generate content dynamically
-const container = document.getElementById("inputs");
+// build grid
+const inputsDiv = document.getElementById("inputs");
 inputs.forEach((item, i) => {
-  const div = document.createElement("div");
-  div.className = "main";
-  div.innerHTML = `<h3>Input ${i+1}:</h3>
-                   <p>${item.text}</p>
-                   <hr>
-                   ${item.image ? `<img src="${item.image}" alt="result">` :
-                     item.video ? `<video src="${item.video}" controls></video>` :
-                     item.noResult ? "<p>(no result)</p>" : ""}`;
-  container.appendChild(div);
-});
-
-// Frame-by-frame + zoom feature
-document.body.addEventListener("click", e => {
-  if (e.target.tagName === "VIDEO") {
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-    const vid = e.target.cloneNode(true);
-    vid.removeAttribute("controls");
-    vid.play();
-    overlay.appendChild(vid);
-
-    const controls = document.createElement("div");
-    controls.className = "controls";
-    controls.innerHTML = `
-      <button id="rew">⏪ Frame Back</button>
-      <button id="fwd">⏩ Frame Forward</button>
-      <button id="zoomIn">🔍+</button>
-      <button id="zoomOut">🔍−</button>
-    `;
-    overlay.appendChild(controls);
-
-    const close = document.createElement("button");
-    close.className = "close-btn";
-    close.textContent = "Close";
-    close.onclick = () => overlay.remove();
-    overlay.appendChild(close);
-    document.body.appendChild(overlay);
-
-    let zoom = 1;
-    const fps = 30; // adjust if needed
-    document.getElementById("fwd").onclick = () => {
-      vid.pause();
-      vid.currentTime += 1 / fps;
-    };
-    document.getElementById("rew").onclick = () => {
-      vid.pause();
-      vid.currentTime -= 1 / fps;
-    };
-    document.getElementById("zoomIn").onclick = () => {
-      zoom += 0.2;
-      vid.style.transform = `scale(${zoom})`;
-    };
-    document.getElementById("zoomOut").onclick = () => {
-      zoom = Math.max(1, zoom - 0.2);
-      vid.style.transform = `scale(${zoom})`;
-    };
+  const tile = document.createElement("div");
+  tile.className = "tile";
+  let content = "";
+  if (item.image) {
+    content = `<img src="${item.image}" alt="input ${i+1}">`;
+  } else if (item.video) {
+    content = `<video src="${item.video}" preload="metadata"></video>`;
+  } else {
+    content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`;
   }
+  tile.innerHTML = `${content}<p>${item.text}</p>`;
+  tile.addEventListener("click", () => loadToViewer(item, i));
+  inputsDiv.appendChild(tile);
 });
+
+const viewer = document.getElementById("viewer");
+const viewerTitle = document.getElementById("viewer-title");
+const viewerText = document.getElementById("viewer-text");
+
+function loadToViewer(item, index) {
+  viewer.innerHTML = `<h2>Input ${index+1}</h2><p>${item.text}</p>`;
+  if (item.image) {
+    const img = document.createElement("img");
+    img.src = item.image;
+    viewer.appendChild(img);
+  } else if (item.video) {
+    const vid = document.createElement("video");
+    vid.src = item.video;
+    vid.controls = true;
+    vid.autoplay = true;
+    viewer.appendChild(vid);
+  } else {
+    viewer.innerHTML += "<p>(no result)</p>";
+  }
+}
 </script>
 
 </body>
