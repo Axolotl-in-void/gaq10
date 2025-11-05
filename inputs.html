@@ -228,7 +228,8 @@ const inputs = [
   { text: "mouseXR", video: "inputs3.mp4" },
   { text: "mouseXR(3) W W", noResult: true },
   { text: "mouseXR(2) W W W", video: "input5.mp4"},
-  { text: "W W W W mouseXR W W W W W W W mouseXL W W W W W", video: "input6.mp4"}
+  { text: "W W W W mouseXR W W W W W W W mouseXL W W W W W", video: "input6.mp4"},
+  { text: " ", video: "input7.mp4"}
 ];
 
 const inputsDiv = document.getElementById("inputs");
@@ -254,6 +255,7 @@ inputs.forEach((item, i) => {
   else if (item.video) { content = `<video src="${item.video}" preload="metadata"></video>`; }
   else if (item.noResult) { content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ff4d4d;">No result</div>`; }
   else if (item.notRendered) { content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Not rendered yet</div>`; }
+  else if (item.Unprompted) { content = `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#ffaa00;">Unprompted</div>`; }
 
   // Add input label at top
   tile.innerHTML = `<div class="inputLabel">Input ${i+1}</div>` + content + `<p>${item.text}</p>`;
