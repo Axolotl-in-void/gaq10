@@ -57,7 +57,7 @@
     background-color: rgba(42, 0, 0, 0.85);
     border-radius: 12px;
     box-shadow: 0 0 30px #ff000099;
-    padding: 20px;
+    padding: 30px 20px 20px; /* Added top padding for better spacing */
     text-align: center;
   }
   .viewer video, .viewer img {
@@ -113,7 +113,7 @@
     box-shadow: 0 0 25px #aaff00;
   }
 
-  /* Slider styling */
+  /* Slider styling with rounded ends */
   #frameSlider {
     -webkit-appearance: none;
     width: 400px;
@@ -121,7 +121,8 @@
     height: 14px;
     outline: none;
     background: #2a0000;
-    border-radius: 7px;
+    border-radius: 10px; /* Rounded ends */
+    overflow: hidden; /* Ensure rounded corners are visible */
   }
   #frameSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -132,6 +133,7 @@
     cursor: pointer;
     border-radius: 50%;
     box-shadow: 0 0 10px #95ff14;
+    border: 2px solid #000;
   }
   #frameSlider::-moz-range-thumb {
     width: 24px;
@@ -140,6 +142,21 @@
     cursor: pointer;
     border-radius: 50%;
     box-shadow: 0 0 10px #95ff14;
+    border: 2px solid #000;
+  }
+  #frameSlider::-webkit-slider-track {
+    width: 100%;
+    height: 14px;
+    background: #2a0000;
+    border-radius: 10px;
+    border: 1px solid #ff4d4d;
+  }
+  #frameSlider::-moz-range-track {
+    width: 100%;
+    height: 14px;
+    background: #2a0000;
+    border-radius: 10px;
+    border: 1px solid #ff4d4d;
   }
 
   .inputs-container {
@@ -197,7 +214,7 @@
   <button id="frameToggle" style="display:none;">Switch to Frame-by-Frame</button>
   <div id="frameControls" style="display:none;">
     <button id="frameBack">⏪ Frame Back</button>
-    <input type="range" id="frameSlider" min="0" max="100" value="0">
+    <input type="range" id="frameSlider" min="0" max="100" value="0" step="1">
     <button id="frameForward">⏩ Frame Forward</button>
   </div>
 </div>
@@ -296,25 +313,37 @@ frameToggle.addEventListener('click', () => {
 // Frame buttons
 frameBack.addEventListener('click', () => { 
   if(currentVideo) { 
-    currentVideo.currentTime = Math.max(0, currentVideo.currentTime - 1/fps); 
-    updateSlider(); 
-  } 
-});
-frameForward.addEventListener('click', () => { 
-  if(currentVideo) { 
-    currentVideo.currentTime = Math.min(currentVideo.duration, currentVideo.currentTime + 1/fps); 
-    updateSlider(); 
+    const currentFrame = Math.floor(currentVideo.currentTime * fps);
+    currentVideo.currentTime = Math.max(0, (currentFrame - 1) / fps);
+    updateSlider();
   } 
 });
 
-// Frame slider
+frameForward.addEventListener('click', () => { 
+  if(currentVideo) { 
+    const currentFrame = Math.floor(currentVideo.currentTime * fps);
+    currentVideo.currentTime = Math.min(currentVideo.duration, (currentFrame + 1) / fps);
+    updateSlider();
+  } 
+});
+
+// Frame slider with snapping
 frameSlider.addEventListener('input', () => {
-  if(currentVideo) currentVideo.currentTime = frameSlider.value / fps;
+  if(currentVideo) {
+    // Snap to exact frame position
+    const frame = parseInt(frameSlider.value);
+    currentVideo.currentTime = frame / fps;
+  }
 });
 
 function updateSlider() {
-  if(currentVideo) frameSlider.value = Math.floor(currentVideo.currentTime * fps);
+  if(currentVideo) {
+    // Snap to exact frame position
+    const currentFrame = Math.floor(currentVideo.currentTime * fps);
+    frameSlider.value = currentFrame;
+  }
 }
+
 setInterval(updateSlider, 100); // keep slider in sync
 </script>
 
